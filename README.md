@@ -25,6 +25,8 @@ Requirements:
 
 ## 1. Install locally
 
+Clone this repo and run this command:
+
 ```
 helm install jimmerioles-weather-app jimmerioles-weather-app-chart/ --values jimmerioles-weather-app-chart/values.yaml
 ```
