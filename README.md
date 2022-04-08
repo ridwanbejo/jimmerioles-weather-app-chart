@@ -26,19 +26,19 @@ Requirements:
 ## 1. Install locally
 
 ```
-helm install jimmerioles-weather-app-chart jimmerioles-weather-app/ --values jimmerioles-weather-app/values.yaml
+helm install jimmerioles-weather-app jimmerioles-weather-app-chart/ --values jimmerioles-weather-app-chart/values.yaml
 ```
 
 ## 2. Upgrade the chart
 
 ```
-helm upgrade jimmerioles-weather-app-chart jimmerioles-weather-app/ --values jimmerioles-weather-app/values.yaml
+helm upgrade jimmerioles-weather-app jimmerioles-weather-app-chart/ --values jimmerioles-weather-app-chart/values.yaml
 ```
 
 ## 3. Uninstall
 
 ```
-helm uninstall jimmerioles-weather-app-chart
+helm uninstall jimmerioles-weather-app
 ```
 
 # C. How does it works?
