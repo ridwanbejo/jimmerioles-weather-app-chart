@@ -1,37 +1,58 @@
-## Welcome to GitHub Pages
+# A. About the project
 
-You can use the [editor on GitHub](https://github.com/ridwanbejo/jimmerioles-weather-app-chart/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This is the dockerize version of [jimmerioles/progressive-weather-app](https://github.com/jimmerioles/progressive-weather-app) that you could run into your Kubernetes Cluster. I use Helm Chart approach to deploy it easily into Kubernetes.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+It has some features such as:
 
-### Markdown
+- Autoscaling
+- Customized rolling upgrade strategy
+- Customized Ingress
+- Customized resource requests and limit
+- Customized health check
+- Customized pod disruption budget
+- Customized node affnity
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Requirements:
 
-```markdown
-Syntax highlighted code block
+- Kubernetes 1.23+
+- Helm v3.8.0
+- Kubernetes nodes with your own node selector or these selector as a starter:
+	- `app-development=true`
+	- `db-development=true`
+	- `monitor-development=true`
 
-# Header 1
-## Header 2
-### Header 3
+# B. How-To Guide
 
-- Bulleted
-- List
+## 1. Install locally
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```
+helm install jimmerioles-weather-app-chart jimmerioles-weather-app/ --values jimmerioles-weather-app/values.yaml
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+## 2. Upgrade the chart
 
-### Jekyll Themes
+```
+helm upgrade jimmerioles-weather-app-chart jimmerioles-weather-app/ --values jimmerioles-weather-app/values.yaml
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ridwanbejo/jimmerioles-weather-app-chart/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## 3. Uninstall
 
-### Support or Contact
+```
+helm uninstall jimmerioles-weather-app-chart
+```
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+# C. How does it works?
+
+The containerized version source code is forked from [jimmerioles/progressive-weather-app](https://github.com/jimmerioles/progressive-weather-app) and hosted at [ridwanbejo/progressive-weather-app](https://github.com/ridwanbejo/progressive-weather-app). Then I publish the docker image to [DockerHub](https://hub.docker.com/r/ridwanbejo/jimmoriales-pwa).
+
+You can customize your settings from values.yaml and passed it to this chart installation as mentioned in How-To Guide. 
+
+I've tested the deployment by deploying the chart into K3s in my local machine. The autoscaling feature is also tested by performing `ab -n 1000000 -c 1000 http://localhost:31246` and I saw that the HPA is functioning well by scaling the web app from 5 pods into 10 pods. Here is sample of autoscaling logs:
+
+```
+Events:
+  Type     Reason                        Age                From                       Message
+  ----     ------                        ----               ----                       -------
+  Normal   SuccessfulRescale             1h                 horizontal-pod-autoscaler  New size: 5; reason: All metrics below target
+  Normal   SuccessfulRescale             111s               horizontal-pod-autoscaler  New size: 10; reason: cpu resource utilization (percentage of request) above target
+```
